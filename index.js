@@ -5,9 +5,9 @@ function isEmpty(data) {
     if (data == null) return true;
     if (data == undefined) return true;
     if (Number.isNaN(data)) return true
-    if (typeof data === 'string' || Array.isArray(data)) return data.length > 0;
-    if (data instanceof Date) return data.toDateString().length > 0;
-    if (typeof data === 'object') return Object.keys(data).length > 0;
+    if (typeof data === 'string' || Array.isArray(data)) return data.length === 0;
+    if (data instanceof Date) return data.toDateString().length === 0;
+    if (typeof data === 'object') return Object.keys(data).length === 0;
     return false;
 }
 
@@ -169,7 +169,7 @@ function getTypes(data) {
 
 // add hyphen in a string in place of space
 function addHyphen(str) {
-    return word.replace(/\s/g, '-').toLowerCase();
+    return str.replace(/\s/g, '-').toLowerCase();
 }
 
 // get property from the obj with stringified path
@@ -203,6 +203,14 @@ function setObjectProp(obj, path, value) {
     }, o);
 }
 
+// remove duplicates from the array
+function removeDuplicate(data) {
+    if(isArray(data)){
+        return [...new Set(data)];
+    }
+    return data;
+}
+
 module.exports = {
     isEmpty,
     isArray,
@@ -217,5 +225,8 @@ module.exports = {
     separator,
     toCamelCase,
     getTypes,
-    addHyphen
+    addHyphen,
+    getObjectProp,
+    setObjectProp,
+    removeDuplicate
 } 

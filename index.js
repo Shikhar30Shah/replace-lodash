@@ -89,30 +89,30 @@ function conformsTo(object, source) {
 };
 
 // cloneDeep
-function cloneDeep(obj2) {
+function cloneDeep(obj) {
     // Check if obj2 is not an object or is null
-    if (typeof obj2 !== 'object' || obj2 === null) {
-        return obj2; // Return the value if obj2 is not an object
+    if (typeof obj !== 'object' || obj === null || obj === undefined) {
+        return obj; // Return the value if obj2 is not an object
     }
 
     // Handle Date
-    if (obj2 instanceof Date) {
-        return new Date(obj2.getTime());
+    if (obj instanceof Date) {
+        return new Date(obj.getTime());
     }
 
     // Handle moment
-    if (typeof moment !== 'undefined' && moment.isMoment(obj2)) {
-        return moment(obj2);
+    if (typeof moment !== 'undefined' && moment.isMoment(obj)) {
+        return moment(obj);
     }
 
     // Create an array or object to hold the values
-    let copy = Array.isArray(obj2) ? [] : {};
+    let copy = Array.isArray(obj) ? [] : {};
 
-    for (let key in obj2) {
+    for (let key in obj) {
         // Check if the property is a direct property of the object
-        if (obj2.hasOwnProperty(key)) {
+        if (obj.hasOwnProperty(key)) {
             // Recursively call cloneDeep for nested objects and arrays
-            copy[key] = cloneDeep(obj2[key]);
+            copy[key] = cloneDeep(obj[key]);
         }
     }
 
@@ -204,9 +204,20 @@ function setObjectProp(obj, path, value) {
 }
 
 // remove duplicates from the array
-function removeDuplicate(data) {
-    if(isArray(data)){
+function removeDuplicate(data, prop) {
+    if(isArray(data) && !isObject(data[0])){
         return [...new Set(data)];
+    }
+    // for array of objects
+    if(isArray(data) && isObject(data[0])){
+        const props = [];
+        return data.filter((item) => {
+            if (props.find(p => deepEqual(item, p))) {
+                return false;
+            }
+            props.push(item);
+            return true;
+        });
     }
     return data;
 }
